@@ -5,11 +5,35 @@
 		    <%= link_to "sample app", '#', id: "logo" %>
 		    <nav>
 		    <ul class="nav pull-right">
-			    <li><%= link_to "Home",	home_path %></li>
-			    <li><%= link_to "Help",	'#' %></li>
-			    <li><%= link_to "Sign in",	'#' %></li>
+			    <li><%= link_to "Home",	root_path %></li>
+			    <li><%= link_to "Help",	help_path %></li>
+		    <% if signed_in? then %>
+			    <li> <%= link_to "Users", '#' %> </li>
+			    <li id="fat-menu" class="dropdown">
+			    <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"> Account
+				    <b class="caret"></b></a>
+					    <ul role="menu" class="dropdown-memu">
+						    <li> <%= link_to "Profile", current_user %> </li>
+						    <li> <%= link_to "Settings", '#' %> </li>
+						    <li class="divider">  </li>
+						    <li>
+						    <%= link_to "Sign out", signout_path, method: "delete" %>
+						    </li>
+					    </ul>
+				    </li>
+		    <% else %>
+			    <li><%= link_to "Sign in",	signin_path %></li>
+		    <% end %>
 		    </ul>
 		    </nav>
 	    </div>
 	  </div>
 	</header>
+	 <script>
+	     $(function(){
+		     //注意：事件要绑定在UI容器上，而不是关闭按钮中
+		     $('.dropdown-toggle').dropdown()
+		     alert('h')
+	     })
+								      
+	 </script>

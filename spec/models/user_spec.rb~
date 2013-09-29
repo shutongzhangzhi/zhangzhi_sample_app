@@ -12,6 +12,7 @@ describe User do
 	it { should respond_to(:password_digest)}
 	it { should respond_to(:password)}
 	it { should respond_to(:password_confirmation)}
+	it { should respond_to(:remember_token)}
 	it { should respond_to(:authenticate)}
 
 	it { should be_valid }
@@ -33,7 +34,7 @@ describe User do
 
 	describe "when email format is invalid " do
 		it "should be invalid" do
-			addressed = %w[user@foo,com user_at_foo.org 
+			addressed = %w[user@foo,com user_at_foo.org foo@bar..com
 				example.user@foo. foo@bar_baz.com foo@bar+baz.com]
 			addressed.each do |invalid_address|
 				@user.email = invalid_address
