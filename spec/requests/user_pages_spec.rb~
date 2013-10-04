@@ -91,7 +91,7 @@ include Rails.application.routes.url_helpers
 			  fill_in "Name", 	with: "Example User"
 			  fill_in "Email",	with: "user@example.com"
 			  fill_in "Password", 	with: "foobar"
-			  fill_in "Password confirmation", with: "foobar"
+			  fill_in "Confirm Password", with: "foobar"
 		  end
 
 		  it "should create a user" do
@@ -161,6 +161,12 @@ include Rails.application.routes.url_helpers
 		  specify { expect(user.reload).not_to be_admin }
 	  end
 
+  end
+
+  describe "profile page" do 
+	  let(:user) { FactoryGirl.create(:user) }
+	  let!(:m1) { FactoryGirl.create(:micropost, user: user, content: "Foo") }
+	  let!(:m2) { FactoryGirl.create(:micropost, user: user, content: "Bar") }
   end
 
 end
