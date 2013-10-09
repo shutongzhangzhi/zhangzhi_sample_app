@@ -90,4 +90,44 @@ include Rails.application.routes.url_helpers
 	  click_link "sample app"
 	  expect(page).to have_title(full_title(''))
   end
+
+
+describe "user feed" do
+		let(:user) { FactoryGirl.create(:user) }
+
+		around do |example|
+			example.metadata.fetch(:micropost_count, 0).times { FactoryGirl.create(:micropost, user: user) }
+			example.run
+		end
+
+		before do
+			 sign_in user
+			  visit root_path 
+		end
+
+		describe "pagination" , micropost_count: 31 do
+
+			it{ should have_selector('div.pagination') }
+			
+			it "should list each micropost" do
+				user.microposts.paginate(page:1).each do |post|
+					expect(page).to have_selector("li##{post.id}")
+				end
+			end
+		end
+
+		describe "micropost count" do
+
+			it { should have_content("0 micropost") }
+
+			describe "have only one micropost" , micropost_count: 1 do
+				it { should have_content("1 micropost") }
+			end
+
+			describe "have many micropost" , micropost_count: 3 do
+				it { should have_content("3 microposts") }
+			end
+		end
+	end
+
 end

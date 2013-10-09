@@ -6,6 +6,8 @@ describe "MicropostPages" do
 	let(:user) { FactoryGirl.create(:user) }
 	before { sign_in user }
 
+	
+
 	describe "micropost creation" do
 		before { visit root_path }
 
@@ -41,4 +43,5 @@ describe "MicropostPages" do
 			end
 		end
 	end
+
 end

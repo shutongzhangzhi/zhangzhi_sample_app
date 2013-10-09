@@ -34,7 +34,7 @@ include Rails.application.routes.url_helpers
 
 		  it "should render the user's feed" do
 			  user.feed.each do | item |
-				  expect(page).to have_selector("li##{item.id}"， text: item.content)
+				  expect(page).to have_selector("li##{item.id}", text: item.content)
 			  end
 		  end
 	  end
@@ -90,4 +90,43 @@ include Rails.application.routes.url_helpers
 	  click_link "sample app"
 	  expect(page).to have_title(full_title(''))
   end
+
+
+describe "user feed" do
+		let(:user) { FactoryGirl.create(:user) }
+		around(:each) do |b|
+			b.run
+		end
+
+		before do 
+			sign_in user
+			visit root_path 
+		end
+
+		describe "pagination" do
+			before { 31.times { FactoryGirl.create(:micropost, user: user) } } 
+			after { Micropost.delete_all }
+
+			it { should have_selector('div.pagination') }
+
+			it "should list each micropost" do
+				user.microposts.paginate(page:1).each do |post|
+					expect(page).to have_selector("li##{post.id}")
+				end
+			end
+		end
+
+		it { should have_content("0 micropost") }
+
+		describe "have only one micropost" do
+			before { FactoryGirl.create(:micropost, user:user) }
+			it { should have_content("1") }
+		end
+
+		describe "have many microposts" do
+			before { 3.times { FactoryGirl.create(:micropost, user:user) } }
+			it { should have_content("3") }
+		end
+	end
+
 end
