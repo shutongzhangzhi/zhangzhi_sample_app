@@ -7,6 +7,9 @@
 	<%= @user.name %>
 		</h1>
 		</section>
+		<section>
+		<%= render 'shared/stats' %>
+		</section>
 	</aside>
 	<div class="span8">
 		<% if @user.microposts.any? %>
@@ -14,7 +17,7 @@
 			<ol class="microposts">
 				<%= render @microposts %>
 			</ol>
-			<%= will_paginate @microposts
+			<%= will_paginate @microposts %>
 		<% end %>
 	</div>
 </div>

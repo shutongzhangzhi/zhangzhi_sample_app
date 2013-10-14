@@ -37,6 +37,17 @@ include Rails.application.routes.url_helpers
 				  expect(page).to have_selector("li##{item.id}", text: item.content)
 			  end
 		  end
+
+		  describe "follower/following counts " do
+			  let(:other_user) { FactoryGirl.create(:user) }
+			  before do
+				  other_user.follow!(user)
+				  visit root_path
+			  end
+
+			  it { should have_link("0 following", href: following_user_path(user) }
+			  it { should have_link("1 followers", href: followers_user_path(user) }
+		  end
 	  end
   end
 
@@ -94,21 +105,21 @@ include Rails.application.routes.url_helpers
 
 describe "user feed" do
 		let(:user) { FactoryGirl.create(:user) }
-		around(:each) do |b|
-			b.run
+
+		around do |example|
+			example.metadata.fetch(:micropost_count, 0).times { FactoryGirl.create(:micropost, user: user) }
+			example.run
 		end
 
-		before do 
-			sign_in user
-			visit root_path 
+		before do
+			 sign_in user
+			  visit root_path 
 		end
 
-		describe "pagination" do
-			before { 31.times { FactoryGirl.create(:micropost, user: user) } } 
-			after { Micropost.delete_all }
+		describe "pagination" , micropost_count: 31 do
 
-			it { should have_selector('div.pagination') }
-
+			it{ should have_selector('div.pagination') }
+			
 			it "should list each micropost" do
 				user.microposts.paginate(page:1).each do |post|
 					expect(page).to have_selector("li##{post.id}")
@@ -116,16 +127,17 @@ describe "user feed" do
 			end
 		end
 
-		it { should have_content("0 micropost") }
+		describe "micropost count" do
 
-		describe "have only one micropost" do
-			before { FactoryGirl.create(:micropost, user:user) }
-			it { should have_content("1") }
-		end
+			it { should have_content("0 micropost") }
 
-		describe "have many microposts" do
-			before { 3.times { FactoryGirl.create(:micropost, user:user) } }
-			it { should have_content("3") }
+			describe "have only one micropost" , micropost_count: 1 do
+				it { should have_content("1 micropost") }
+			end
+
+			describe "have many micropost" , micropost_count: 3 do
+				it { should have_content("3 microposts") }
+			end
 		end
 	end
 
